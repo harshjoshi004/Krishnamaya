@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435331348242",
+    "project_id": "krishnamaya-c24b9",
+    "storage_bucket": "krishnamaya-c24b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435331348242:android:e7ac293b2c6e855254e5cb",
+        "android_client_info": {
+          "package_name": "com.example.krishnamaya1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTC9APh0E3Z-072rwxJTrPC403WEKG81M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
