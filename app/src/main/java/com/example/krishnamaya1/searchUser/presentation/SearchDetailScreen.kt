@@ -21,7 +21,7 @@ fun SearchDetailScreen(uid: String?) {
     var user by remember { mutableStateOf<KrishnamayaUser?>(null) }
 
     LaunchedEffect(key1 = user) {
-        if(user==null){
+        if(user==null) {
             isLoading = true
         }
     }

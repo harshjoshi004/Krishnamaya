@@ -15,8 +15,8 @@ class PostsFeedViewModel: ViewModel() {
     private val postsRef = FirebaseDatabase.getInstance().getReference("posts")
     private val usersRef = FirebaseDatabase.getInstance().getReference("users")
 
-    private val _livePostsAndUsers = MutableLiveData<List<Pair<KrishnamayaPost, KrishnamayaUser>>?>()
-    val livePostsAndUsers:MutableLiveData<List<Pair<KrishnamayaPost, KrishnamayaUser>>?> = _livePostsAndUsers
+    private val _livePostsAndUsers = MutableLiveData< List<Pair<KrishnamayaPost, KrishnamayaUser>>? >()
+    val livePostsAndUsers: MutableLiveData< List<Pair<KrishnamayaPost, KrishnamayaUser>>? > = _livePostsAndUsers
 
     fun getPostsAndUsers(onFailure:(String)->Unit) {
         val result = mutableListOf<Pair<KrishnamayaPost, KrishnamayaUser>>()

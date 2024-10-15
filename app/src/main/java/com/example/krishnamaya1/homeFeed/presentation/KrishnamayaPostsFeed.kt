@@ -2,6 +2,7 @@ package com.example.krishnamaya1.homeFeed.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -81,8 +82,10 @@ fun HomeScreenUI(navController: NavController, viewModel: MainViewModel) {
             postsAndUsers.value?.let { list ->
                 items(list){ (post, user) ->
                     println("Harsh: post = $post, user =  $user")
-                    KrishnamayaPostCard(post, user.userName, user.imageLink)
-                    Spacer(modifier = Modifier.size(8.dp))
+                    Column {
+                        KrishnamayaPostCard(post, user.userName, user.imageLink)
+                        Divider(color = ElevatedMustard1)
+                    }
                 }
             }
         }

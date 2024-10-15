@@ -9,12 +9,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,17 +38,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.krishnamaya1.BoldSubheading
+import com.example.krishnamaya1.Heading
 import com.example.krishnamaya1.LoadingScreen
 import com.example.krishnamaya1.MainActivity
 import com.example.krishnamaya1.MainViewModel
+import com.example.krishnamaya1.Subheading
 import com.example.krishnamaya1.authentication.data.KrishnamayaUser
 import com.example.krishnamaya1.authentication.presentation.AuthActivity
 import com.example.krishnamaya1.authentication.presentation.AuthViewModel
 import com.example.krishnamaya1.myBasicDialogue
 import com.example.krishnamaya1.myToast
 import com.example.krishnamaya1.ui.theme.BackgroundMustard
+import com.example.krishnamaya1.ui.theme.ElevatedMustard1
+import com.example.krishnamaya1.ui.theme.ElevatedMustard2
 
 @Composable
 fun ProfileScreenUI(navController: NavController, viewModel: MainViewModel) {
@@ -52,6 +67,20 @@ fun ProfileScreenUI(navController: NavController, viewModel: MainViewModel) {
     var email by remember { mutableStateOf("") }
     var photoUri by remember { mutableStateOf("") }
     var loading by remember {mutableStateOf(false)}
+    val onClickLogOut = {
+        authViewModel.logout( context, afterFun = {
+            Log.d("ProfileScreenUI", "User Logged Out")
+            myToast(context, "User Logged Out")
+        })
+
+        val activity = context as? Activity
+
+        activity?.let { act->
+            act.startActivity(Intent(act, AuthActivity::class.java))
+            act.finish()
+        }
+    }
+    val onClickEdit = {}
 
     LaunchedEffect(Unit) {
         loading = true
@@ -68,34 +97,81 @@ fun ProfileScreenUI(navController: NavController, viewModel: MainViewModel) {
             onFailure = { message -> Log.d("ProfileScreenUI", "Error Occurred: $message") }
         )
     }
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(16.dp)
+    ) {
+        val (pfp, name, status, mail, logout, edit) = createRefs()
 
-    Column {
+        //name
+        Heading(text = userName, color = ElevatedMustard2,
+            modifier = Modifier
+                .constrainAs(name) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                })
+
+        //mail
+        BoldSubheading(text = email,
+            modifier = Modifier
+                .constrainAs(mail) {
+                    start.linkTo(parent.start)
+                    top.linkTo(name.bottom)
+                })
+
+        //status
+        Subheading(text = bio,
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .constrainAs(status) {
+                    start.linkTo(parent.start)
+                    top.linkTo(mail.bottom)
+                })
+
+        //pfp
         Image(
             modifier = Modifier
-                .size(100.dp)
+                .size(150.dp)
+                .constrainAs(pfp) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
                 .clip(CircleShape),
-            painter = rememberAsyncImagePainter(model = photoUri, contentScale = ContentScale.FillBounds),
+            painter = rememberAsyncImagePainter(
+                model = photoUri,
+                contentScale = ContentScale.FillBounds
+            ),
             contentDescription = null
         )
 
-        Text(text = userName)
+        //button
+        Button(
+            onClick = { onClickLogOut() },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .constrainAs(logout) {
+                    top.linkTo(status.bottom)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                }
+        ) {
+            BoldSubheading(text = "Logout", color = ElevatedMustard2)
+        }
 
-        Text(text = bio)
-
-        Text(text = email)
-
-        Button(onClick = {
-            authViewModel.logout( context, afterFun = {
-                Log.d("ProfileScreenUI", "User Logged Out")
-                myToast(context, "User Logged Out")
-            } )
-            val activity = context as? Activity
-            activity?.let { act->
-                act.startActivity(Intent(act, AuthActivity::class.java))
-                act.finish()
-            }
-        }) {
-            Text(text = "Logout")
+        //button2
+        IconButton(
+            onClick = { onClickEdit() },
+            modifier = Modifier
+                .constrainAs(edit) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+                .clip(CircleShape)
+                .background(ElevatedMustard1)
+        ) {
+            Icon(imageVector = Icons.Default.Edit, contentDescription = null, tint = ElevatedMustard2)
         }
     }
 

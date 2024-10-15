@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.krishnamaya1.addPost.data.KrishnamayaPost
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,15 +13,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,6 +42,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.krishnamaya1.Paragraph
 import com.example.krishnamaya1.authentication.data.KrishnamayaUser
 import com.example.krishnamaya1.authentication.presentation.AuthSharedPreferences
+import com.example.krishnamaya1.ui.theme.ElevatedMustard1
 import com.example.krishnamaya1.ui.theme.ElevatedMustard2
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -64,16 +70,19 @@ fun KrishnamayaPostCard(post:KrishnamayaPost, userName:String?,  imageUrl:String
             Image(
                 painter = if (imageUrl == null) painterResource(id = R.drawable.defimg)
                 else rememberAsyncImagePainter(model = imageUrl),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(ElevatedMustard2),
                 contentDescription = null
             )
 
             Spacer(modifier = Modifier.size(8.dp))
 
             Column {
-                BoldSubheading(text = userName ?: "User Name", color = ElevatedMustard2)
+                Text( fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                    text = userName ?: "User Name", color = ElevatedMustard2)
                 Text( fontWeight = FontWeight.Normal, fontSize = 12.sp,
                     text = formatTimestamp(post.timeStamp), color = ElevatedMustard2)
             }
@@ -95,16 +104,19 @@ fun KrishnamayaPostCard(post:KrishnamayaPost, userName:String?,  imageUrl:String
             Spacer(modifier = Modifier.size(8.dp))
 
             post.postImage?.let {
-                Box(modifier = Modifier.fillMaxWidth()){
-                    Image(
-                        painter = rememberAsyncImagePainter(model = it),
-                        modifier = Modifier
-                            .height(250.dp)
-                            .align(Alignment.Center)
-                            .clip(RoundedCornerShape(15.dp)),
-                        contentDescription = null
-                    )
-                }
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        model = it,
+                        contentScale = ContentScale.FillWidth,
+                    ),
+                    contentScale = ContentScale.FillHeight,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 150.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(ElevatedMustard2),
+                    contentDescription = null
+                )
             }
 
             Spacer(modifier = Modifier.size(8.dp))
