@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +48,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.krishnamaya1.Paragraph
 import com.example.krishnamaya1.myLoaderDialogue
+import com.example.krishnamaya1.ui.theme.ElevatedMustard1
 import com.example.krishnamaya1.ui.theme.ElevatedMustard2
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun AddPostUI(navController: NavController) {
@@ -156,17 +162,28 @@ fun AddPostUI(navController: NavController) {
                 val userName = AuthSharedPreferences.getUserName(context)
                 val bio = AuthSharedPreferences.getBio(context)
                 Image(
-                    painter = if (imageUrl == null) painterResource(id = R.drawable.defimg)
-                    else rememberAsyncImagePainter(model = imageUrl),
+                    painter =
+                        if (imageUrl == null)
+                            painterResource(id = R.drawable.defimg)
+                        else
+                            rememberAsyncImagePainter(model = imageUrl),
                     modifier = Modifier
                         .padding(8.dp)
                         .size(50.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .background(ElevatedMustard1),
+                    contentScale = ContentScale.Crop,
                     contentDescription = null
                 )
                 Column {
-                    Subheading(text = userName ?: "User Name")
-                    Paragraph(text = bio ?: "Bio")
+                    // User Name
+                    Text( fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                        text = userName ?: "User Name", color = ElevatedMustard2,
+                    )
+                    // Time Stamp
+                    Text( fontWeight = FontWeight.Normal, fontSize = 14.sp,
+                        text = bio ?: "Bio", color = ElevatedMustard2,
+                    )
                 }
             }
 

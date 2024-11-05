@@ -67,7 +67,7 @@ fun HomeScreenUI(navController: NavController, viewModel: MainViewModel) {
             ExtendedFloatingActionButton(
                 onClick = { onFloatingActionButtonClick() },
                 icon = { Icon(Icons.Default.Add, "Extended floating action button.") },
-                text = { BoldSubheading(text = "Add Post", color = ElevatedMustard2) },
+                text = { BoldSubheading(text = " Add ", color = ElevatedMustard2) },
                 containerColor = ElevatedMustard1,
                 contentColor = ElevatedMustard2
             )

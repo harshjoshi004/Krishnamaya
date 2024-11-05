@@ -41,7 +41,7 @@ fun SearchUsersCard(user: KrishnamayaUser, onClick: (KrishnamayaUser)->Unit){
 
     // user click logic
     val userClick = {
-        //onClick(user)
+        onClick(user)
     }
 
     // rest of the ui
@@ -51,7 +51,7 @@ fun SearchUsersCard(user: KrishnamayaUser, onClick: (KrishnamayaUser)->Unit){
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 8.dp)
         ){
             val (image, name, email, bio, button) = createRefs()
 
@@ -63,7 +63,7 @@ fun SearchUsersCard(user: KrishnamayaUser, onClick: (KrishnamayaUser)->Unit){
                     .padding(end = 8.dp)
                     .size(65.dp)
                     .clip(CircleShape)
-                    .background(ElevatedMustard2)
+                    .background(ElevatedMustard1)
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)

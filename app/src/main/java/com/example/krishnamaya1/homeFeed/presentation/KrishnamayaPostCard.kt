@@ -55,7 +55,7 @@ fun KrishnamayaPostCard(post:KrishnamayaPost, userName:String?,  imageUrl:String
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(vertical = 8.dp, horizontal = 8.dp)
     ) {
         val (profileRow, postDetails) = createRefs()
 
@@ -74,7 +74,7 @@ fun KrishnamayaPostCard(post:KrishnamayaPost, userName:String?,  imageUrl:String
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape)
-                    .background(ElevatedMustard2),
+                    .background(ElevatedMustard1),
                 contentDescription = null
             )
 
@@ -105,21 +105,17 @@ fun KrishnamayaPostCard(post:KrishnamayaPost, userName:String?,  imageUrl:String
 
             post.postImage?.let {
                 Image(
-                    painter = rememberAsyncImagePainter(
-                        model = it,
-                        contentScale = ContentScale.FillWidth,
-                    ),
-                    contentScale = ContentScale.FillHeight,
+                    painter = rememberAsyncImagePainter(model = it),
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 150.dp)
                         .clip(RoundedCornerShape(15.dp))
-                        .background(ElevatedMustard2),
+                        .background(ElevatedMustard1),
                     contentDescription = null
                 )
+                Spacer(modifier = Modifier.size(8.dp))
             }
-
-            Spacer(modifier = Modifier.size(8.dp))
         }
     }
 }

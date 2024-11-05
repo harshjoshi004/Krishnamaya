@@ -6,11 +6,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -95,7 +97,8 @@ fun MainView(){
             NavigationManager(
                 navController = navController,
                 viewModel = viewModel,
-                padval = paddingValues
+                padval = PaddingValues(start=0.0.dp, top=0.0.dp, end=0.0.dp,
+                    bottom=paddingValues.calculateBottomPadding() - 30.5.dp)
             )
         }
     }

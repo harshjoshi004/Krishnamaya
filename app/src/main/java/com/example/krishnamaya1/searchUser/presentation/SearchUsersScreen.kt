@@ -56,15 +56,11 @@ fun SearchUsersScreen(navController: NavHostController) {
     val consistentPadding = 8.dp
 
     val userDetailNavLogic: (KrishnamayaUser) -> Unit = { user ->
-        navController.navigate("search-detail/${user.userName}")
+        navController.navigate("search-detail/${user.userId}")
     }
 
     LaunchedEffect(key1 = usersListState.value) {
-        if(usersListState.value != null){
-            isLoading = false
-        } else {
-            isLoading = true
-        }
+        isLoading = usersListState.value == null
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -73,17 +69,15 @@ fun SearchUsersScreen(navController: NavHostController) {
         }
     }
 
-    LazyColumn(modifier = Modifier
-        .background(BackgroundMustard)
-        .fillMaxSize()) {
+    LazyColumn(modifier = Modifier.background(BackgroundMustard).fillMaxSize()
+    ) {
 
         //search bar
         item {
             OutlinedTextField(value = searchStr, onValueChange = {searchStr = it},
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(vertical = consistentPadding),
+                    .padding(consistentPadding),
                 label = { Text(text = "Search Users", color = ElevatedMustard2) },
                 leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(

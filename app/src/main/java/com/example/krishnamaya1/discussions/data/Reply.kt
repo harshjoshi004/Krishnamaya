@@ -1,11 +1,9 @@
 package com.example.krishnamaya1.discussions.data
 
-data class Discussion(
+data class Reply(
     val userId: String = "",
-    val discussionId: String = "",
+    val replyId: String = "",
 
     val text: String = "",
-
     val timeStamp: String = "",
-    val listOfReplies: List<Reply> = emptyList()
 )

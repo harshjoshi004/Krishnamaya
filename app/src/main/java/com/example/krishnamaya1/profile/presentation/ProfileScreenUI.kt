@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,23 +51,28 @@ import com.example.krishnamaya1.Subheading
 import com.example.krishnamaya1.authentication.data.KrishnamayaUser
 import com.example.krishnamaya1.authentication.presentation.AuthActivity
 import com.example.krishnamaya1.authentication.presentation.AuthViewModel
+import com.example.krishnamaya1.discussions.data.Discussion
+import com.example.krishnamaya1.discussions.presentation.DiscussionCard
+import com.example.krishnamaya1.discussions.presentation.DiscussionViewModel
 import com.example.krishnamaya1.myBasicDialogue
 import com.example.krishnamaya1.myToast
 import com.example.krishnamaya1.ui.theme.BackgroundMustard
 import com.example.krishnamaya1.ui.theme.ElevatedMustard1
 import com.example.krishnamaya1.ui.theme.ElevatedMustard2
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ProfileScreenUI(navController: NavController, viewModel: MainViewModel) {
     val authViewModel = androidx.lifecycle.viewmodel.compose.viewModel<AuthViewModel>()
+    val discussionViewModel = androidx.lifecycle.viewmodel.compose.viewModel<DiscussionViewModel>()
     val context = LocalContext.current
-    val firebaseUser by authViewModel.firebaseCurrentUser.observeAsState()
-    val firebaseError by authViewModel.error.observeAsState()
-    var userName by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var photoUri by remember { mutableStateOf("") }
+    var listState = remember {
+        mutableStateOf<List<Pair<Discussion, KrishnamayaUser>>?>(null)
+    }
+
+    var curUser by remember { mutableStateOf<KrishnamayaUser?>(null) }
     var loading by remember {mutableStateOf(false)}
+
     val onClickLogOut = {
         authViewModel.logout( context, afterFun = {
             Log.d("ProfileScreenUI", "User Logged Out")
@@ -80,100 +86,68 @@ fun ProfileScreenUI(navController: NavController, viewModel: MainViewModel) {
             act.finish()
         }
     }
-    val onClickEdit = {}
+    val onClickEdit = {
+        Log.d("important-harsh", "Profile: ${curUser?.userId}")
+        navController.navigate("edit-user/${curUser?.userId}")
+    }
 
     LaunchedEffect(Unit) {
         loading = true
         Log.d("LaunchedEffect", "User Data Changed")
-        authViewModel.getCurrentUserData(
-            onSuccess = { user ->
-                Log.d("ProfileScreenUI", "User Data: $user")
-                userName = user?.userName ?: ""
-                bio = user?.bio ?: ""
-                email = user?.email ?: ""
-                photoUri = user?.imageLink ?: ""
-                loading = false
-            },
-            onFailure = { message -> Log.d("ProfileScreenUI", "Error Occurred: $message") }
-        )
-    }
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(16.dp)
-    ) {
-        val (pfp, name, status, mail, logout, edit) = createRefs()
-
-        //name
-        Heading(text = userName, color = ElevatedMustard2,
-            modifier = Modifier
-                .constrainAs(name) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                })
-
-        //mail
-        BoldSubheading(text = email,
-            modifier = Modifier
-                .constrainAs(mail) {
-                    start.linkTo(parent.start)
-                    top.linkTo(name.bottom)
-                })
-
-        //status
-        Subheading(text = bio,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(status) {
-                    start.linkTo(parent.start)
-                    top.linkTo(mail.bottom)
-                })
-
-        //pfp
-        Image(
-            modifier = Modifier
-                .size(150.dp)
-                .constrainAs(pfp) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
+        FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+            discussionViewModel.getUserFromId(uid) { user ->
+                curUser = user
+                Log.d("priyansh", "ProfileScreenUI: ${user.userId} ")
+                discussionViewModel.getDiscussions(user) { it->
+                    listState.value = it
+                    loading = false
                 }
-                .clip(CircleShape),
-            painter = rememberAsyncImagePainter(
-                model = photoUri,
-                contentScale = ContentScale.FillBounds
-            ),
-            contentDescription = null
-        )
-
-        //button
-        Button(
-            onClick = { onClickLogOut() },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(logout) {
-                    top.linkTo(status.bottom)
-                    start.linkTo(parent.start)
-                    bottom.linkTo(parent.bottom)
-                }
-        ) {
-            BoldSubheading(text = "Logout", color = ElevatedMustard2)
-        }
-
-        //button2
-        IconButton(
-            onClick = { onClickEdit() },
-            modifier = Modifier
-                .constrainAs(edit) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-                .clip(CircleShape)
-                .background(ElevatedMustard1)
-        ) {
-            Icon(imageVector = Icons.Default.Edit, contentDescription = null, tint = ElevatedMustard2)
+            }
         }
     }
 
-    if(loading) LoadingScreen()
+    if(loading){
+        LoadingScreen()
+    } else {
+        LazyColumn {
+            curUser?.let {
+                item {
+                    UserBanner(
+                        user = it,
+                        onClickLogout = { onClickLogOut() },
+                        onClickEdit = { onClickEdit() }
+                    )
+                }
+            }
+            item {
+                androidx.compose.material.Divider(color = ElevatedMustard1)
+            }
+            item {
+                BoldSubheading(
+                    text = "My Activity: ",
+                    color = ElevatedMustard2,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            item {
+                androidx.compose.material.Divider(color = ElevatedMustard1)
+            }
+            listState.value?.let { list ->
+                for ((dis, user) in list) {
+                    item {
+                        DiscussionCard(discussionViewModel, user, dis)
+                    }
+                    item {
+                        androidx.compose.material.Divider(color = ElevatedMustard1)
+                    }
+                }
+                if(list.isEmpty()) {
+                    item {
+                        Text("No activity by ${curUser?.userName}..",
+                            modifier = Modifier.fillMaxWidth().padding(16.dp))
+                    }
+                }
+            }
+        }
+    }
 }

@@ -6,6 +6,7 @@ import android.widget.Toast
 import android.util.Patterns
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.example.krishnamaya1.authentication.data.KrishnamayaUser
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -133,4 +134,41 @@ fun handleFirebaseAuthException(exception: Exception?):String {
             "Unknown error occurred!"
         }
     }
+}
+
+fun isDetailValid(
+    name: String,
+    bio: String,
+    imageUri: Uri?,
+    context: Context,
+    nameError: String,
+    bioError: String,
+): Boolean {
+    var isValid = true
+
+    if (name.isBlank()) {
+        Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+        isValid = false
+        return isValid
+    }
+
+    if (bio.isBlank()) {
+        Toast.makeText(context, "Bio cannot be empty", Toast.LENGTH_SHORT).show()
+        isValid = false
+        return isValid
+    }
+
+    if (nameError.isNotEmpty()) {
+        Toast.makeText(context, nameError, Toast.LENGTH_SHORT).show()
+        isValid = false
+        return isValid
+    }
+
+    if (bioError.isNotEmpty()) {
+        Toast.makeText(context, bioError, Toast.LENGTH_SHORT).show()
+        isValid = false
+        return isValid
+    }
+
+    return isValid
 }

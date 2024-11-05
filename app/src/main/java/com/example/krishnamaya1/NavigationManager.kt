@@ -10,7 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.krishnamaya1.addPost.presentation.AddPostUI
+import com.example.krishnamaya1.discussions.presentation.DiscussionFeed
 import com.example.krishnamaya1.homeFeed.presentation.HomeScreenUI
+import com.example.krishnamaya1.profile.presentation.EditProfileScreen
 import com.example.krishnamaya1.profile.presentation.ProfileScreenUI
 import com.example.krishnamaya1.searchUser.presentation.SearchDetailScreen
 import com.example.krishnamaya1.searchUser.presentation.SearchUsersScreen
@@ -45,7 +47,7 @@ fun NavigationManager(
         }
         composable(Screens.BottomBarScreens.Discussion.bRoute){
             viewModel.setCurrentScreen(Screens.BottomBarScreens.Discussion)
-            DiscussionScreenUI(viewModel)
+            DiscussionFeed()
         }
 
         // Nav Drawer Screens
@@ -96,7 +98,15 @@ fun NavigationManager(
         }
         composable("search-detail/{uid}"){ backStack->
             val uid = backStack.arguments?.getString("uid")
-            SearchDetailScreen(uid = uid)
+            SearchDetailScreen(uid = uid) {
+                navController.popBackStack()
+            }
+        }
+        composable("edit-user/{uid}"){ backStack->
+            val uid = backStack.arguments?.getString("uid")
+            EditProfileScreen(curUserId = uid) {
+                navController.popBackStack()
+            }
         }
     }
 }
@@ -149,11 +159,6 @@ fun AboutUsScreenUI(viewModel: MainViewModel) {
 @Composable
 fun SpecialMantrasScreenUI(viewModel: MainViewModel) {
     Text(viewModel.currentScreen.value.title)
-}
-
-@Composable
-fun DiscussionScreenUI(viewModel: MainViewModel) {
-    Text(text = viewModel.currentScreen.value.title)
 }
 
 @Composable
